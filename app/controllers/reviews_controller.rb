@@ -11,12 +11,19 @@ class ReviewsController < ApplicationController
   end
 
   def create
-    # TODO: Create the record in database
-    raise "TODO: Save to database: #{review_params}"
+    # COMPLETED: Create the record in database
+    @review.assign_attributes(review_params)
+    if @review.save
+      redirect_to product_purchase_path(params[:product_id], @review.purchase_id)
+    else
+      flash[:error] = @review.errors.full_messages.join(', ')
+      render :new
+    end
   end
 
   private
-    def review_params
-      params.require(:review).permit(:purchase_id)
-    end
+
+  def review_params
+    params.require(:review).permit(:purchase_id, :rating, :comment)
+  end
 end
